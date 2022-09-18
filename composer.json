@@ -1,12 +1,12 @@
 {
-    "name": "sammyjo20/package-template",
-    "description": "Description",
+    "name": "sammyjo20/laravel-chunkable-jobs",
+    "description": "Split a job into multiple separate job chunks",
     "type": "library",
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Sammyjo20\\Package\\": "src/",
-            "Sammyjo20\\Package\\Tests\\": "tests/"
+            "Sammyjo20\\ChunkableJobs\\": "src/",
+            "Sammyjo20\\ChunkableJobs\\Tests\\": "tests/"
         }
     },
     "authors": [
