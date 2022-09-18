@@ -2,9 +2,9 @@
 
 use Sammyjo20\ChunkableJobs\Chunk;
 use Illuminate\Support\Facades\Bus;
-use Sammyjo20\ChunkableJobs\Tests\Fixtures\ConstructorArgsJob;
 use Sammyjo20\ChunkableJobs\Tests\Fixtures\PaginatedJob;
 use Sammyjo20\ChunkableJobs\Tests\Fixtures\UnknownSizeJob;
+use Sammyjo20\ChunkableJobs\Tests\Fixtures\ConstructorArgsJob;
 use Sammyjo20\ChunkableJobs\Exceptions\BulkChunkDispatcherException;
 
 test('it will dispatch all jobs at once', function () {
