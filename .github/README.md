@@ -34,7 +34,7 @@ use Sammyjo20\LaravelHaystack\ChunkableJob;
 
 class GetPageOfPokemon extends ChunkableJob implements ShouldQueue
 {
-	use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public function defineChunk(): ?Chunk
     {
@@ -57,7 +57,7 @@ use Sammyjo20\LaravelHaystack\Chunk;
 
 public function defineChunk(): ?Chunk
 {
-	$response = Http::asJson()->get('https://pokeapi.co/api/v2/pokemon');
+    $response = Http::asJson()->get('https://pokeapi.co/api/v2/pokemon');
 
     $count = $response->json('count'); // 1154
 
@@ -80,11 +80,11 @@ use Sammyjo20\LaravelHaystack\Chunk;
 
 protected function handleChunk(Chunk $chunk): void
 {
-	$response = Http::asJson()->get(sprintf('https://pokeapi.co/api/v2/pokemon?limit=%s&offset=%s', $chunk->limit, $chunk->offset));
+    $response = Http::asJson()->get(sprintf('https://pokeapi.co/api/v2/pokemon?limit=%s&offset=%s', $chunk->limit, $chunk->offset));
 
     $data = $response->json();
 
-	// Store data of response
+    // Store data of response
 }
 ```
 
@@ -126,11 +126,11 @@ protected function handleChunk(Chunk $chunk): void
 {
     $response = Http::asJson()->get(sprintf('https://pokeapi.co/api/v2/pokemon?limit=%s&offset=%s', $chunk->limit, $chunk->offset));
 
-	// Stop chunking early...
+    // Stop chunking early...
 
-	if ($response->failed()) {
-			$this->stopChunking();
-	}
+    if ($response->failed()) {
+        $this->stopChunking();
+    }
 }
 ```
 
@@ -195,7 +195,7 @@ use Sammyjo20\LaravelHaystack\UnknownSizeChunk;
 
 class GetPageOfPokemon extends ChunkableJob implements ShouldQueue
 {
-	use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public function defineChunk(): ?Chunk
     {
@@ -205,11 +205,11 @@ class GetPageOfPokemon extends ChunkableJob implements ShouldQueue
     protected function handleChunk(Chunk $chunk): void
     {
         // Keep processing
-		// When ready to stop: 
+        // When ready to stop: 
 				
-		if ($stop === true) {
-			$this->stopChunking();
-		}
+	if ($stop === true) {
+	    $this->stopChunking();
+	}
     }
 }
 ```
@@ -223,8 +223,8 @@ Sometimes you might want to change the chunking entirely, if you would like to d
 
 protected function handleChunk(Chunk $chunk): void
 {
-	$chunk = new Chunk(100, 10)
-	$chunk = $chunk->move(5);
+    $chunk = new Chunk(100, 10)
+    $chunk = $chunk->move(5);
 
     $this->setNextChunk($chunk);
 }
