@@ -3,13 +3,16 @@
 declare(strict_types=1);
 
 use Sammyjo20\ChunkableJobs\Chunk;
+use Sammyjo20\ChunkableJobs\ChunkRange;
 
 test('when creating a chunk that has 30 items in with a chunk size of 10 it will create 3 chunks', function () {
-    $chunkRange = chunkRange(30, 10);
+    $chunkRange = ChunkRange::create(30, 10);
 
-    expect($chunkRange)->toHaveCount(3);
+    $chunks = iterator_to_array($chunkRange);
 
-    [$chunkOne, $chunkTwo, $chunkThree] = $chunkRange;
+    expect($chunks)->toHaveCount(3);
+
+    [$chunkOne, $chunkTwo, $chunkThree] = $chunks;
 
     // Chunk One
 
@@ -59,9 +62,11 @@ test('when creating a chunk that has 30 items in with a chunk size of 10 it will
 test('when creating a chunk that has 33 items in with a chunk size of 10 it will create 4 chunks to fill in the remainder', function () {
     $chunkRange = chunkRange(33, 10);
 
-    expect($chunkRange)->toHaveCount(4);
+    $chunks = iterator_to_array($chunkRange);
 
-    [$chunkOne, $chunkTwo, $chunkThree, $chunkFour] = $chunkRange;
+    expect($chunks)->toHaveCount(4);
+
+    [$chunkOne, $chunkTwo, $chunkThree, $chunkFour] = $chunks;
 
     // Chunk One
 
@@ -299,4 +304,18 @@ test('metadata can be passed in to the constructor', function () {
     $chunk = new Chunk(30, 10, 1, ['name' => 'Sam']);
 
     expect($chunk->metadata)->toEqual(['name' => 'Sam']);
+});
+
+test('you can disable the next chunk functionality', function () {
+    $chunk = new Chunk(30, 10);
+
+    $nextChunk = $chunk->next();
+
+    expect($nextChunk->position)->toEqual(2);
+    expect($nextChunk->isLast())->toBeFalse();
+
+    $nextChunk->disableNext();
+
+    expect($nextChunk->isLast())->toBeTrue();
+    expect($nextChunk->next())->toBe($nextChunk);
 });

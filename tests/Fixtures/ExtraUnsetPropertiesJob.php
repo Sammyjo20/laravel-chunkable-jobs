@@ -26,7 +26,7 @@ class ExtraUnsetPropertiesJob extends ChunkableJob implements ShouldQueue
         $this->name = 'Sam';
     }
 
-    protected function defineChunk(): ?Chunk
+    public function defineChunk(): ?Chunk
     {
         return new Chunk(30, 10);
     }

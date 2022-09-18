@@ -16,7 +16,7 @@ class ChunkIntervalJob extends ChunkableJob implements ShouldQueue
 
     protected int $chunkInterval = 5;
 
-    protected function defineChunk(): ?Chunk
+    public function defineChunk(): ?Chunk
     {
         return new Chunk(30, 10);
     }

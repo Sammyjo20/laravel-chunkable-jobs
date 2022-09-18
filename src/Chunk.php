@@ -79,6 +79,13 @@ class Chunk
     public array $metadata = [];
 
     /**
+     * Disable fetching the next chunk.
+     *
+     * @var bool
+     */
+    protected bool $disableNext = false;
+
+    /**
      * Create a new chunk
      *
      * @param int $totalItems
@@ -121,7 +128,7 @@ class Chunk
      */
     public function next(): Chunk
     {
-        if ($this->isLast()) {
+        if ($this->disableNext === true || $this->isLast()) {
             return $this;
         }
 
@@ -154,14 +161,27 @@ class Chunk
             throw new InvalidArgumentException(sprintf('The position must be between 1 and %s.', $this->totalChunks));
         }
 
-        $chunkRange = ChunkRange::create($this->totalItems, $this->originalSize, $this->metadata);
-        $chunk = $chunkRange[$position - 1];
+        // We'll calculate the remaining items with some maths
+
+        $remaining = ((($position * $this->originalSize) - $this->totalItems) * -1) + $this->originalSize;
+
+        // Now we'll create a new chunk to process it with.
+
+        $newChunk = new Chunk($this->totalItems, $this->originalSize);
+
+        $newChunk->position = $position;
+        $newChunk->remainingItems = $remaining;
+        $newChunk->remainingChunks = $this->totalChunks - $position;
+        $newChunk->offset = ($position - 1) * $this->originalSize;
+        $newChunk->limit = min($remaining, $this->originalSize);
+        $newChunk->size = $newChunk->limit;
+        $newChunk->metadata = $this->metadata;
 
         if ($mutable === false) {
-            return $chunk;
+            return $newChunk;
         }
 
-        return $this->replace($chunk);
+        return $this->replace($newChunk);
     }
 
     /**
@@ -213,7 +233,7 @@ class Chunk
      */
     public function isLast(): bool
     {
-        return $this->remainingChunks === 0;
+        return $this->remainingChunks === 0 || $this->disableNext === true;
     }
 
     /**
@@ -244,5 +264,17 @@ class Chunk
     public function isNotEmpty(): bool
     {
         return ! $this->isEmpty();
+    }
+
+    /**
+     * Disable the next chunk functionality
+     *
+     * @return $this
+     */
+    public function disableNext(): Chunk
+    {
+        $this->disableNext = true;
+
+        return $this;
     }
 }

@@ -15,7 +15,7 @@ class UnknownSizeJob extends ChunkableJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected function defineChunk(): ?Chunk
+    public function defineChunk(): ?Chunk
     {
         return new UnknownSizeChunk(100);
     }
