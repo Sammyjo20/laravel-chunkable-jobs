@@ -19,11 +19,12 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: ${{ github.head_ref }}
-          token: ${{ secrets.PHP_CS_FIXER }}
+
       - name: Run PHP CS Fixer
         uses: docker://oskarstark/php-cs-fixer-ga
         with:
-          args: --config=.php-cs-fixer.dist.php
+          args: --config=.php-cs-fixer.dist.php --allow-risky=yes
+
       - name: Commit changes
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
