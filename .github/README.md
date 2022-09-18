@@ -13,8 +13,8 @@ This package allows you to split up a process into multiple jobs with their own 
 ```php
 <?php
 
-use Sammyjo20\LaravelHaystack\Chunk;
-use Sammyjo20\LaravelHaystack\ChunkableJob;
+use Sammyjo20\ChunkableJobs\Chunk;
+use Sammyjo20\ChunkableJobs\ChunkableJob;
 
 class GetPageOfPokemon extends ChunkableJob implements ShouldQueue
 {
@@ -55,8 +55,8 @@ Create a new job and remove the `handle` method from the job. Next, extend the `
 ```php
 <?php
 
-use Sammyjo20\LaravelHaystack\Chunk;
-use Sammyjo20\LaravelHaystack\ChunkableJob;
+use Sammyjo20\ChunkableJobs\Chunk;
+use Sammyjo20\ChunkableJobs\ChunkableJob;
 
 class GetPageOfPokemon extends ChunkableJob implements ShouldQueue
 {
@@ -79,7 +79,7 @@ Next, we’ll need to define our chunk, this tells the chunkable job how many it
 ```php
 <?php
 
-use Sammyjo20\LaravelHaystack\Chunk;
+use Sammyjo20\ChunkableJobs\Chunk;
 
 public function defineChunk(): ?Chunk
 {
@@ -102,7 +102,7 @@ Next, we’ll want to write the logic to process each chunk. In my example, I wa
 ```php
 <?php
 
-use Sammyjo20\LaravelHaystack\Chunk;
+use Sammyjo20\ChunkableJobs\Chunk;
 
 protected function handleChunk(Chunk $chunk): void
 {
@@ -156,7 +156,7 @@ Sometimes you may want to throw as much resource as you can to a specific chunke
 ```php
 <?php
 
-use Sammyjo20\LaravelHaystack\BulkChunkDispatcher;
+use Sammyjo20\ChunkableJobs\BulkChunkDispatcher;
 
 // Will dispatch all jobs at once 🚀
 
@@ -174,7 +174,7 @@ Sometimes you might want to stop the chunking process early. You can use the `st
 ```php
 <?php
 
-use Sammyjo20\LaravelHaystack\Chunk;
+use Sammyjo20\ChunkableJobs\Chunk;
 
 protected function handleChunk(Chunk $chunk): void
 {
@@ -195,7 +195,7 @@ Sometimes you might want to resume a chunkable job where it may have failed prev
 ```php
 <?php
 
-use Sammyjo20\LaravelHaystack\Chunk;
+use Sammyjo20\ChunkableJobs\Chunk;
 
 $job = new GetPageOfPokemon;
 
@@ -213,7 +213,7 @@ If you would like to execute some logic before the chunking starts, you can exte
 If you need to iterate over every chunk, you can use the `ChunkRange` class. This will return a generator that you can iterate over to get every chunk.
 
 ```php
-use Sammyjo20\LaravelHaystack\ChunkRange;
+use Sammyjo20\ChunkableJobs\ChunkRange;
 
 $chunkRange = ChunkRange::create(30, 10);
 
@@ -229,9 +229,9 @@ Sometimes you might not know the size/limit that you want to chunk for and there
 ```php
 <?php
 
-use Sammyjo20\LaravelHaystack\Chunk;
-use Sammyjo20\LaravelHaystack\ChunkableJob;
-use Sammyjo20\LaravelHaystack\UnknownSizeChunk;
+use Sammyjo20\ChunkableJobs\Chunk;
+use Sammyjo20\ChunkableJobs\ChunkableJob;
+use Sammyjo20\ChunkableJobs\UnknownSizeChunk;
 
 class GetPageOfPokemon extends ChunkableJob implements ShouldQueue
 {
