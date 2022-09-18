@@ -3,6 +3,8 @@
 use Sammyjo20\ChunkableJobs\Chunk;
 use Sammyjo20\ChunkableJobs\Tests\Fixtures\ChunkIntervalJob;
 use Sammyjo20\ChunkableJobs\Tests\Fixtures\EarlyFinishJob;
+use Sammyjo20\ChunkableJobs\Tests\Fixtures\ExtraPropertiesJob;
+use Sammyjo20\ChunkableJobs\Tests\Fixtures\ExtraUnsetPropertiesJob;
 use Sammyjo20\ChunkableJobs\Tests\Fixtures\FailedJob;
 use Sammyjo20\ChunkableJobs\Tests\Fixtures\NextChunkJob;
 use Sammyjo20\ChunkableJobs\Tests\Fixtures\NullChunkJob;
@@ -18,10 +20,12 @@ test('when dispatching a job that has 30 items with a chunk size of 10, three jo
     $chunkOne = cache()->get('1');
     $chunkTwo = cache()->get('2');
     $chunkThree = cache()->get('3');
+    $chunkFour = cache()->get('4'); // Four shouldn't exist
 
     expect($chunkOne)->toBeInstanceOf(Chunk::class);
     expect($chunkTwo)->toBeInstanceOf(Chunk::class);
     expect($chunkThree)->toBeInstanceOf(Chunk::class);
+    expect($chunkFour)->toBeNull();
 
     expect($chunkOne->offset)->toEqual(0);
     expect($chunkTwo->offset)->toEqual(10);
@@ -148,4 +152,28 @@ test('a chunkInterval can be defined for a delay between jobs', function () {
     expect($chunkOne)->toBeNull();
     expect($chunkTwo)->toEqual(5);
     expect($chunkThree)->toEqual(5);
+});
+
+test('extra properties are copied over to every job', function () {
+    ExtraPropertiesJob::dispatch();
+
+    $chunkOne = cache()->get('1');
+    $chunkTwo = cache()->get('2');
+    $chunkThree = cache()->get('3');
+
+    expect($chunkOne)->toEqual('Sam');
+    expect($chunkTwo)->toEqual('Sam');
+    expect($chunkThree)->toEqual('Sam');
+});
+
+test('you can specify extra properties to be unset', function () {
+    ExtraUnsetPropertiesJob::dispatch();
+
+    $chunkOne = cache()->get('1');
+    $chunkTwo = cache()->get('2');
+    $chunkThree = cache()->get('3');
+
+    expect($chunkOne)->toEqual('Sam');
+    expect($chunkTwo)->toBeNull();
+    expect($chunkThree)->toBeNull();
 });
