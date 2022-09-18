@@ -1,14 +1,14 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Sammyjo20\ChunkableJobs\Tests\Fixtures;
 
 use Illuminate\Bus\Queueable;
+use Sammyjo20\ChunkableJobs\Chunk;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
+use Sammyjo20\ChunkableJobs\ChunkableJob;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
-use Sammyjo20\ChunkableJobs\Chunk;
-use Sammyjo20\ChunkableJobs\ChunkableJob;
 
 class FailedJob extends ChunkableJob implements ShouldQueue
 {

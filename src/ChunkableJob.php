@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Sammyjo20\ChunkableJobs;
 
@@ -93,7 +93,7 @@ abstract class ChunkableJob
         // and nextChunk.
 
         $unsetProperties = array_merge([
-            'job', 'middleware', 'chunk', 'nextChunk'
+            'job', 'middleware', 'chunk', 'nextChunk',
         ], $this->extraUnsetProperties);
 
         $clone = clone $this;

@@ -3,8 +3,6 @@
 declare(strict_types=1);
 
 use Sammyjo20\ChunkableJobs\Chunk;
-use Sammyjo20\ChunkableJobs\ChunkRange;
-use Sammyjo20\ChunkableJobs\Metadata;
 
 test('when creating a chunk that has 30 items in with a chunk size of 10 it will create 3 chunks', function () {
     $chunkRange = chunkRange(30, 10);

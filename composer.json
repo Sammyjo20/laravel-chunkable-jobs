@@ -31,7 +31,7 @@
             "./vendor/bin/pest"
         ],
         "fix-code": [
-            "./vendor/bin/php-cs-fixer fix"
+            "./vendor/bin/php-cs-fixer fix --allow-risky=yes"
         ]
     },
     "config": {

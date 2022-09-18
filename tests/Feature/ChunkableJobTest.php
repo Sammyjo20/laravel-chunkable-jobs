@@ -1,18 +1,18 @@
-<?php
+<?php declare(strict_types=1);
 
 use Sammyjo20\ChunkableJobs\Chunk;
-use Sammyjo20\ChunkableJobs\Tests\Fixtures\ChunkIntervalJob;
-use Sammyjo20\ChunkableJobs\Tests\Fixtures\EarlyFinishJob;
-use Sammyjo20\ChunkableJobs\Tests\Fixtures\ExtraPropertiesJob;
-use Sammyjo20\ChunkableJobs\Tests\Fixtures\ExtraUnsetPropertiesJob;
+use Sammyjo20\ChunkableJobs\Tests\Fixtures\SetUpJob;
 use Sammyjo20\ChunkableJobs\Tests\Fixtures\FailedJob;
+use Sammyjo20\ChunkableJobs\Tests\Fixtures\ReleasedJob;
 use Sammyjo20\ChunkableJobs\Tests\Fixtures\NextChunkJob;
 use Sammyjo20\ChunkableJobs\Tests\Fixtures\NullChunkJob;
 use Sammyjo20\ChunkableJobs\Tests\Fixtures\PaginatedJob;
-use Sammyjo20\ChunkableJobs\Tests\Fixtures\ReleasedJob;
-use Sammyjo20\ChunkableJobs\Tests\Fixtures\SetUpJob;
-use Sammyjo20\ChunkableJobs\Tests\Fixtures\UnknownSizeJob;
 use Sammyjo20\ChunkableJobs\Tests\Fixtures\ZeroItemsJob;
+use Sammyjo20\ChunkableJobs\Tests\Fixtures\EarlyFinishJob;
+use Sammyjo20\ChunkableJobs\Tests\Fixtures\UnknownSizeJob;
+use Sammyjo20\ChunkableJobs\Tests\Fixtures\ChunkIntervalJob;
+use Sammyjo20\ChunkableJobs\Tests\Fixtures\ExtraPropertiesJob;
+use Sammyjo20\ChunkableJobs\Tests\Fixtures\ExtraUnsetPropertiesJob;
 
 test('when dispatching a job that has 30 items with a chunk size of 10, three jobs will be dispatched', function () {
     PaginatedJob::dispatch();
