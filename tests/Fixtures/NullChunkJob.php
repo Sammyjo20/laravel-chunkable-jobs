@@ -14,7 +14,7 @@ class NullChunkJob extends ChunkableJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected function defineChunk(): ?Chunk
+    public function defineChunk(): ?Chunk
     {
         return null;
     }

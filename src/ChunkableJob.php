@@ -172,7 +172,7 @@ abstract class ChunkableJob
      *
      * @return Chunk|null
      */
-    abstract protected function defineChunk(): ?Chunk;
+    abstract public function defineChunk(): ?Chunk;
 
     /**
      * Handle the chunk.

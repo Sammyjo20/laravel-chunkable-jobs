@@ -44,7 +44,7 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function chunkRange(int $totalItems, int $chunkSize): array
+function chunkRange(int $totalItems, int $chunkSize): Generator
 {
     return ChunkRange::create($totalItems, $chunkSize);
 }
