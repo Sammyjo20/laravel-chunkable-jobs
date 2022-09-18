@@ -15,7 +15,4 @@
             <directory suffix=".php">./src</directory>
         </include>
     </coverage>
-    <php>
-        <env name="QUEUE_DRIVER" value="sync"/>
-    </php>
 </phpunit>
