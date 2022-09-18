@@ -10,8 +10,34 @@ This package allows you to split up a process into multiple jobs with their own 
 
 ## Example
 
-```bash
-Todo
+```php
+<?php
+
+use Sammyjo20\LaravelHaystack\Chunk;
+use Sammyjo20\LaravelHaystack\ChunkableJob;
+
+class GetPageOfPokemon extends ChunkableJob implements ShouldQueue
+{
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    public function defineChunk(): ?Chunk
+    {
+        $response = Http::asJson()->get('https://pokeapi.co/api/v2/pokemon');
+
+    	$count = $response->json('count'); // 1154
+
+    	return new Chunk(totalItems: $count, chunkSize: 1, startingPosition: 1);
+    }
+
+    protected function handleChunk(Chunk $chunk): void
+    {
+        $response = Http::asJson()->get(sprintf('https://pokeapi.co/api/v2/pokemon?limit=%s&offset=%s', $chunk->limit, $chunk->offset));
+
+    	$data = $response->json();
+
+    	// Store data of response
+    }
+}
 ```
 
 ## Installation
