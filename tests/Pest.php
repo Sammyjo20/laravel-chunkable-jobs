@@ -24,6 +24,11 @@
 |
 */
 
+use Sammyjo20\ChunkableJobs\ChunkRange;
+use Sammyjo20\ChunkableJobs\Tests\TestCase;
+
+uses(TestCase::class)->in(__DIR__);
+
 expect()->extend('toBeOne', function () {
     return $this->toBe(1);
 });
@@ -38,3 +43,8 @@ expect()->extend('toBeOne', function () {
 | global functions to help you to reduce the number of lines of code in your test files.
 |
 */
+
+function chunkRange(int $totalItems, int $chunkSize): array
+{
+    return ChunkRange::create($totalItems, $chunkSize);
+}
