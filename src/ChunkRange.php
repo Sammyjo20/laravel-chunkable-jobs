@@ -9,13 +9,14 @@ class ChunkRange
     /**
      * Create an array of chunks.
      *
-     * @param  int  $totalItems
-     * @param  int  $chunkSize
-     * @return Chunk[]
+     * @param int $totalItems
+     * @param int $chunkSize
+     * @param array $metadata
+     * @return array
      */
-    public static function create(int $totalItems, int $chunkSize): array
+    public static function create(int $totalItems, int $chunkSize, array $metadata = []): array
     {
-        $chunk = new Chunk($totalItems, $chunkSize);
+        $chunk = new Chunk($totalItems, $chunkSize, 1, $metadata);
         $chunks = [$chunk];
 
         // We'll create an array of chunks by retrieving the previous

@@ -72,13 +72,21 @@ class Chunk
     public int $position;
 
     /**
+     * Metadata on the chunk
+     *
+     * @var array
+     */
+    public array $metadata = [];
+
+    /**
      * Create a new chunk
      *
      * @param int $totalItems
      * @param int $chunkSize
      * @param int $startingPosition
+     * @param array $metadata
      */
-    public function __construct(int $totalItems, int $chunkSize, int $startingPosition = 1)
+    public function __construct(int $totalItems, int $chunkSize, int $startingPosition = 1, array $metadata = [])
     {
         if ($totalItems < 0) {
             throw new InvalidArgumentException('The totalItems argument must not be less than 0.');
@@ -99,6 +107,7 @@ class Chunk
         $this->size = $this->limit;
         $this->offset = 0;
         $this->position = 1;
+        $this->metadata = $metadata;
 
         if ($startingPosition !== 1) {
             $this->move($startingPosition, true);
@@ -145,7 +154,7 @@ class Chunk
             throw new InvalidArgumentException(sprintf('The position must be between 1 and %s.', $this->totalChunks));
         }
 
-        $chunkRange = ChunkRange::create($this->totalItems, $this->originalSize);
+        $chunkRange = ChunkRange::create($this->totalItems, $this->originalSize, $this->metadata);
         $chunk = $chunkRange[$position - 1];
 
         if ($mutable === false) {
@@ -172,6 +181,7 @@ class Chunk
         $this->limit = $chunk->limit;
         $this->offset = $chunk->offset;
         $this->position = $chunk->position;
+        $this->metadata = $chunk->metadata;
 
         return $this;
     }

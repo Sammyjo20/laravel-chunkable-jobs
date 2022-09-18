@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Sammyjo20\ChunkableJobs\Chunk;
 use Sammyjo20\ChunkableJobs\ChunkRange;
+use Sammyjo20\ChunkableJobs\Metadata;
 
 test('when creating a chunk that has 30 items in with a chunk size of 10 it will create 3 chunks', function () {
     $chunkRange = chunkRange(30, 10);
@@ -274,4 +275,30 @@ test('when you move to the same position it will return the same object', functi
     $movedChunk = $chunk->move(1);
 
     expect($chunk)->toBe($movedChunk);
+});
+
+test('metadata can be added to a chunk', function () {
+    $chunk = new Chunk(30, 10);
+
+    expect($chunk->metadata)->toBeEmpty();
+
+    $chunk->metadata['name'] = 'Sam';
+
+    expect($chunk->metadata)->toEqual(['name' => 'Sam']);
+});
+
+test('metadata is retained when moving to a new position', function () {
+    $chunk = new Chunk(30, 10);
+
+    $chunk->metadata['name'] = 'Sam';
+
+    $movedChunk = $chunk->move(3);
+
+    expect($movedChunk->metadata)->toEqual(['name' => 'Sam']);
+});
+
+test('metadata can be passed in to the constructor', function () {
+    $chunk = new Chunk(30, 10, 1, ['name' => 'Sam']);
+
+    expect($chunk->metadata)->toEqual(['name' => 'Sam']);
 });
