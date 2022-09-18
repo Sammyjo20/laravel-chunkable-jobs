@@ -1,0 +1,40 @@
+{
+    "name": "sammyjo20/package-template",
+    "description": "Description",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Sammyjo20\\Package\\": "src/",
+            "Sammyjo20\\Package\\Tests\\": "tests/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Sammyjo20",
+            "email": "29132017+Sammyjo20@users.noreply.github.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": "^8.1"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.5",
+        "pestphp/pest": "^1.21",
+        "spatie/ray": "^1.33"
+    },
+    "scripts": {
+        "test": [
+            "./vendor/bin/pest"
+        ],
+        "fix-code": [
+            "./vendor/bin/php-cs-fixer fix"
+        ]
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    }
+}
