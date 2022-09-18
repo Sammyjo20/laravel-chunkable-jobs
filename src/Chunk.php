@@ -161,7 +161,7 @@ class Chunk
             throw new InvalidArgumentException(sprintf('The position must be between 1 and %s.', $this->totalChunks));
         }
 
-        // We'll calculate the remaining items with so maths
+        // We'll calculate the remaining items with some maths
 
         $remaining = ((($position * $this->originalSize) - $this->totalItems) * -1) + $this->originalSize;
 
