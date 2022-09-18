@@ -9,27 +9,21 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Sammyjo20\ChunkableJobs\Chunk;
 use Sammyjo20\ChunkableJobs\ChunkableJob;
-use Sammyjo20\ChunkableJobs\UnknownSizeChunk;
 
-class UnknownLengthJob  extends ChunkableJob implements ShouldQueue
+class EarlyFinishJob extends ChunkableJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    /**
-     * Define the chunk
-     *
-     * @return Chunk|null
-     */
     protected function defineChunk(): ?Chunk
     {
-        return new UnknownSizeChunk(100, 6000);
+        return new Chunk(30, 10);
     }
 
     protected function handleChunk(Chunk $chunk): void
     {
-        ray($chunk);
+        cache()->put($chunk->position, $chunk);
 
-        if ($chunk->position === 15) {
+        if ($chunk->position === 2) {
             $this->stopChunking();
         }
     }

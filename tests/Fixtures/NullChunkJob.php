@@ -10,17 +10,17 @@ use Illuminate\Queue\SerializesModels;
 use Sammyjo20\ChunkableJobs\Chunk;
 use Sammyjo20\ChunkableJobs\ChunkableJob;
 
-class PaginatedJob extends ChunkableJob implements ShouldQueue
+class NullChunkJob extends ChunkableJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected function defineChunk(): ?Chunk
     {
-        return new Chunk(30, 10);
+        return null;
     }
 
     protected function handleChunk(Chunk $chunk): void
     {
-        cache()->put($chunk->position, $chunk);
+        cache()->put('processed', true);
     }
 }

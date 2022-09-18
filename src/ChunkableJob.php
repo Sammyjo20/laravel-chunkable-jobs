@@ -12,6 +12,13 @@ abstract class ChunkableJob
     protected ?Chunk $chunk = null;
 
     /**
+     * Manually specify the next chunk to be processed.
+     *
+     * @var Chunk|null
+     */
+    protected ?Chunk $nextChunk = null;
+
+    /**
      * The delay interval between chunks.
      *
      * @var int
@@ -19,7 +26,7 @@ abstract class ChunkableJob
     protected int $chunkInterval = 0;
 
     /**
-     * Should we process the next chunk.
+     * Should we process the next chunk?
      *
      * @var bool
      */
@@ -81,12 +88,12 @@ abstract class ChunkableJob
         }
 
         // We will need to unset the following properties because they can cause issues
-        // when Haystack needs to serialize the cloned job and store it in the
-        // database. We are unsetting the haystack metadata as Haystack will
-        // set this for us.
+        // when we need to serialize the cloned job in the database. The main culprit
+        // is the "job" instance on the class, but we also want to ignore chunk
+        // and nextChunk.
 
         $unsetProperties = array_merge([
-            'job', 'middleware', 'haystack', 'haystackBaleId', 'haystackBaleAttempts', 'chunk'
+            'job', 'middleware', 'chunk', 'nextChunk'
         ], $this->extraUnsetProperties);
 
         $clone = clone $this;
@@ -97,7 +104,7 @@ abstract class ChunkableJob
 
         // Next, we'll set the chunk of the clone to the next chunk.
 
-        $clone->setChunk($chunk->next());
+        $clone->setChunk($this->nextChunk ?? $chunk->next());
 
         // Finally, we'll dispatch the next chunk
 
@@ -143,6 +150,19 @@ abstract class ChunkableJob
     public function stopChunking(): static
     {
         $this->processNextChunk = false;
+
+        return $this;
+    }
+
+    /**
+     * Set the next chunk to be processed.
+     *
+     * @param Chunk|null $nextChunk
+     * @return ChunkableJob
+     */
+    public function setNextChunk(?Chunk $nextChunk): ChunkableJob
+    {
+        $this->nextChunk = $nextChunk;
 
         return $this;
     }

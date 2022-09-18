@@ -10,7 +10,7 @@ use Illuminate\Queue\SerializesModels;
 use Sammyjo20\ChunkableJobs\Chunk;
 use Sammyjo20\ChunkableJobs\ChunkableJob;
 
-class PaginatedJob extends ChunkableJob implements ShouldQueue
+class ReleasedJob extends ChunkableJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -22,5 +22,9 @@ class PaginatedJob extends ChunkableJob implements ShouldQueue
     protected function handleChunk(Chunk $chunk): void
     {
         cache()->put($chunk->position, $chunk);
+
+        if ($chunk->position === 2) {
+            $this->release();
+        }
     }
 }
