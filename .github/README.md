@@ -139,6 +139,34 @@ protected function handleChunk(Chunk $chunk): void
 - **isEmpty:** Specifies if the chunk is empty, which means the totalItems property is zero.
 - **isNotEmpty:** Opposite of isEmpty
 
+## Dispatching
+
+To dispatch a chunkable job, it's exactly the same. The default behaviour of chunkable jobs is to process one job, then dispatch the next after it has been successfully processed. 
+
+```php
+<?php
+
+GetPageOfPokemon::dispatch();
+```
+
+## Dispatching every chunked job at once
+
+Sometimes you may want to throw as much resource as you can to a specific chunked job. If processing one chunk at a time is not suitable and you would rather dispatch every chunk straight away, you can use the `dispatchAllChunks` static method on the chunkable job. It will accept constructor arguments through the parameters. Alternatively, you can use the `BulkChunkDispatcher` class.
+
+```php
+<?php
+
+use Sammyjo20\LaravelHaystack\BulkChunkDispatcher;
+
+// Will dispatch all jobs at once 🚀
+
+GetPageOfPokemon::dispatchAllChunks();
+
+// or
+
+BulkChunkDispatcher::dispatch(new GetPageOfPokemon);
+```
+
 ## Stopping Chunking Early
 
 Sometimes you might want to stop the chunking process early. You can use the `stopChunking` method and the job won’t dispatch the next chunk.
@@ -180,20 +208,6 @@ dispatch($job);
 
 If you would like to execute some logic before the chunking starts, you can extend the `setUp` method on your chunkable job which will be run once.
 
-## Dispatching every chunked job at once
-
-Sometimes you may want to throw as much resource as you can to a specific chunked job. If processing one chunk at a time is not suitable and you would rather dispatch every chunk straight away, you can use the `BulkChunkDispatcher`. 
-
-```php
-<?php
-
-use Sammyjo20\LaravelHaystack\BulkChunkDispatcher;
-
-// Will dispatch all jobs at once 🚀
-
-BulkChunkDispatcher::dispatch(new GetPageOfPokemon);
-```
-
 ## Using `ChunkRange` to iterate over all chunks
 
 If you need to iterate over every chunk, you can use the `ChunkRange` class. This will return a generator that you can iterate over to get every chunk.
@@ -233,10 +247,10 @@ class GetPageOfPokemon extends ChunkableJob implements ShouldQueue
         // Keep processing
         // When ready to stop: 
 				
-	if ($stop === true) {
-	    $this->stopChunking();
+        if ($stop === true) {
+            $this->stopChunking();
+        }
 	}
-    }
 }
 ```
 

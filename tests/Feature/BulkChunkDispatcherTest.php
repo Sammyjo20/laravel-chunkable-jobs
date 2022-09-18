@@ -2,21 +2,21 @@
 
 use Sammyjo20\ChunkableJobs\Chunk;
 use Illuminate\Support\Facades\Bus;
-use Sammyjo20\ChunkableJobs\BulkChunkDispatcher;
 use Sammyjo20\ChunkableJobs\Tests\Fixtures\PaginatedJob;
 use Sammyjo20\ChunkableJobs\Tests\Fixtures\UnknownSizeJob;
+use Sammyjo20\ChunkableJobs\Tests\Fixtures\ConstructorArgsJob;
 use Sammyjo20\ChunkableJobs\Exceptions\BulkChunkDispatcherException;
 
 test('it will dispatch all jobs at once', function () {
     Bus::fake();
 
-    BulkChunkDispatcher::dispatch(new PaginatedJob);
+    PaginatedJob::dispatchAllChunks();
 
     Bus::assertDispatchedTimes(PaginatedJob::class, 3);
 });
 
 test('the dispatched jobs wont run the next chain', function () {
-    BulkChunkDispatcher::dispatch(new PaginatedJob);
+    PaginatedJob::dispatchAllChunks();
 
     $chunkOne = cache()->get('1');
     $chunkTwo = cache()->get('2');
@@ -43,5 +43,17 @@ test('it throws an exception if you try to use a job with UnknownSizeChunk', fun
     $this->expectException(BulkChunkDispatcherException::class);
     $this->expectExceptionMessage('You cannot iterate through an UnknownSizeChunk.');
 
-    BulkChunkDispatcher::dispatch(new UnknownSizeJob);
+    UnknownSizeJob::dispatchAllChunks();
+});
+
+test('arguments are passed into the constructor from dispatch all chunks method', function () {
+    ConstructorArgsJob::dispatchAllChunks('Sammy');
+
+    $chunkOne = cache()->get('1');
+    $chunkTwo = cache()->get('2');
+    $chunkThree = cache()->get('3');
+
+    expect($chunkOne)->toEqual('Sammy');
+    expect($chunkTwo)->toEqual('Sammy');
+    expect($chunkThree)->toEqual('Sammy');
 });
