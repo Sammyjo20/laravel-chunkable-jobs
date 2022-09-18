@@ -182,7 +182,7 @@ If you would like to execute some logic before the chunking starts, you can exte
 
 ## Dispatching every chunked job at once
 
-Sometimes you may want to throw as much resource as you can to a specific chunked job. If processing one chunk at a time is not suitable and you would rather dispatch every chunk straight away, you can use the `BulkChunkDispatcher`. 
+Sometimes you may want to throw as much resource as you can to a specific chunked job. If processing one chunk at a time is not suitable and you would rather dispatch every chunk straight away, you can use the `dispatchAllChunks` static method on the chunkable job. It will accept constructor arguments through the parameters. Alternatively, you can use the `BulkChunkDispatcher` class. 
 
 ```php
 <?php
@@ -190,6 +190,10 @@ Sometimes you may want to throw as much resource as you can to a specific chunke
 use Sammyjo20\LaravelHaystack\BulkChunkDispatcher;
 
 // Will dispatch all jobs at once 🚀
+
+GetPageOfPokemon::dispatchAllChunks();
+
+// or
 
 BulkChunkDispatcher::dispatch(new GetPageOfPokemon);
 ```

@@ -168,6 +168,18 @@ abstract class ChunkableJob
     }
 
     /**
+     * Dispatch all chunks at once
+     *
+     * @param ...$arguments
+     * @return void
+     * @throws Exceptions\BulkChunkDispatcherException
+     */
+    public static function dispatchAllChunks(...$arguments): void
+    {
+        BulkChunkDispatcher::dispatch(new static(...$arguments));
+    }
+
+    /**
      * Define the chunk. If it's null or a chunk with zero items the chunkable job will stop early.
      *
      * @return Chunk|null
