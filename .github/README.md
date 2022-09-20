@@ -270,6 +270,49 @@ protected function handleChunk(Chunk $chunk): void
 }
 ```
 
+## SetUp & TearDown
+The `setUp` and `tearDown` methods are called before and after the chunking process. This is useful if you need to do some setup before the chunking starts and some cleanup after all the job chunks have finished processing.
+
+```php
+<?php
+
+use Sammyjo20\ChunkableJobs\Chunk;
+use Sammyjo20\ChunkableJobs\ChunkableJob;
+
+class GetPageOfPokemon extends ChunkableJob implements ShouldQueue
+{
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    public function defineChunk(): ?Chunk
+    {
+        $response = Http::asJson()->get('https://pokeapi.co/api/v2/pokemon');
+
+    	$count = $response->json('count'); // 1154
+
+    	return new Chunk(totalItems: $count, chunkSize: 1, startingPosition: 1);
+    }
+
+    protected function handleChunk(Chunk $chunk): void
+    {
+        $response = Http::asJson()->get(sprintf('https://pokeapi.co/api/v2/pokemon?limit=%s&offset=%s', $chunk->limit, $chunk->offset));
+
+    	$data = $response->json();
+
+    	// Store data of response
+    }
+    
+    protected function setUp(): void
+    {
+        \Log::info('Starting the retrieval process...');
+    }
+    
+    protected function tearDown(): void
+    {
+        \Log::info('Finished the retrieval process!');
+    }
+}
+```
+
 ## Support This Project
 
 <a href='https://ko-fi.com/sammyjo20' target='_blank'><img height='35' style='border:0px;height:46px;' src='https://az743702.vo.msecnd.net/cdn/kofi3.png?v=0' border='0' alt='Buy Me a Coffee at ko-fi.com' />
