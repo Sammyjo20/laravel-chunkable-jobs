@@ -58,6 +58,10 @@ abstract class ChunkableJob
             $this->handleChunk($chunk);
 
             $this->prependNextJob();
+
+            if ($chunk->isLast()) {
+                $this->tearDown();
+            }
         }
     }
 
@@ -67,6 +71,16 @@ abstract class ChunkableJob
      * @return void
      */
     protected function setUp(): void
+    {
+        //
+    }
+
+    /**
+     * Extend this method to write logic after the chunkable job is processed.
+     *
+     * @return void
+     */
+    protected function tearDown(): void
     {
         //
     }
