@@ -57,16 +57,14 @@ abstract class ChunkableJob
         $chunk = $this->chunk;
 
         // If we have a chunk, and it isn't empty, we will start
-        // processing it. If it's the first chunk we will run
-        // "setUp".
+        // processing it.
 
-        if (! $chunk instanceof Chunk) {
+        if (! $chunk instanceof Chunk || $chunk->isEmpty()) {
             return;
         }
 
-        if ($chunk->isEmpty()) {
-            return;
-        }
+        // If it's the first chunk we will run "setUp". After
+        // that we will run the "handleChunk" method.
 
         if ($chunk->isFirst()) {
             $this->setUp();
@@ -178,18 +176,6 @@ abstract class ChunkableJob
     }
 
     /**
-     * Stop chunking
-     *
-     * @return $this
-     */
-    public function stopChunking(): static
-    {
-        $this->processNextChunk = false;
-
-        return $this;
-    }
-
-    /**
      * Set the next chunk to be processed.
      *
      * @param Chunk|null $nextChunk
@@ -198,6 +184,18 @@ abstract class ChunkableJob
     public function setNextChunk(?Chunk $nextChunk): ChunkableJob
     {
         $this->nextChunk = $nextChunk;
+
+        return $this;
+    }
+
+    /**
+     * Stop chunking
+     *
+     * @return $this
+     */
+    public function stopChunking(): static
+    {
+        $this->processNextChunk = false;
 
         return $this;
     }

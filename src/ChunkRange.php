@@ -20,7 +20,7 @@ class ChunkRange
     {
         $chunk = new Chunk($totalItems, $chunkSize, 1, $metadata);
 
-        $generator = function () use ($chunk) {
+        $generator = static function () use ($chunk) {
             for ($i = 0; $i < $chunk->totalChunks; $i++) {
                 yield $chunk->move($i + 1);
             }
