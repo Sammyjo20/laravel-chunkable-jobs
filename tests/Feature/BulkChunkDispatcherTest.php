@@ -32,10 +32,16 @@ test('the dispatched jobs wont run the next chain', function () {
     expect($chunkTwo->offset)->toEqual(10);
     expect($chunkThree->offset)->toEqual(20);
 
-    // Every chunk should be considered last as the next is disabled.
+    // Every chunk should have next disabled
 
-    expect($chunkOne->isLast())->toBeTrue();
-    expect($chunkTwo->isLast())->toBeTrue();
+    expect($chunkOne->isNextDisabled())->toBeTrue();
+    expect($chunkTwo->isNextDisabled())->toBeTrue();
+    expect($chunkThree->isNextDisabled())->toBeTrue();
+
+    // But only the last chunk is the last
+
+    expect($chunkOne->isLast())->toBeFalse();
+    expect($chunkTwo->isLast())->toBeFalse();
     expect($chunkThree->isLast())->toBeTrue();
 });
 

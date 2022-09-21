@@ -46,22 +46,41 @@ abstract class ChunkableJob
      */
     public function handle(): void
     {
-        if (is_null($this->chunk)) {
-            $this->setUp();
+        // Let's first check if the chunk has been passed into the job
+        // already. If it has, we'll continue - otherwise we will
+        // run the "defineChunk" method.
 
+        if (is_null($this->chunk)) {
             $this->setChunk($this->defineChunk());
         }
 
         $chunk = $this->chunk;
 
-        if ($chunk instanceof Chunk && $chunk->isNotEmpty()) {
-            $this->handleChunk($chunk);
+        // If we have a chunk, and it isn't empty, we will start
+        // processing it.
 
-            $this->prependNextJob();
+        if (! $chunk instanceof Chunk || $chunk->isEmpty()) {
+            return;
+        }
 
-            if ($chunk->isLast()) {
-                $this->tearDown();
-            }
+        // If it's the first chunk we will run "setUp". After
+        // that we will run the "handleChunk" method.
+
+        if ($chunk->isFirst()) {
+            $this->setUp();
+        }
+
+        $this->handleChunk($chunk);
+
+        // Next we'll calculate the next job to dispatch.
+
+        $this->prependNextJob();
+
+        // If the job has stopped chunking early, or we have hit
+        // the last chunk, we will run the tear down method.
+
+        if ($this->processNextChunk === false || $chunk->isLast()) {
+            $this->tearDown();
         }
     }
 
@@ -97,7 +116,7 @@ abstract class ChunkableJob
         // We don't want to process the next chunk if it's the last chunk, we've stopped chunking
         // or if the job has been released/deleted.
 
-        if ($this->processNextChunk === false || $chunk->isLast() || $this?->job->isDeletedOrReleased()) {
+        if ($this->processNextChunk === false || $chunk->isLast() || $chunk->isNextDisabled() || $this?->job->isDeletedOrReleased()) {
             return;
         }
 
@@ -157,18 +176,6 @@ abstract class ChunkableJob
     }
 
     /**
-     * Stop chunking
-     *
-     * @return $this
-     */
-    public function stopChunking(): static
-    {
-        $this->processNextChunk = false;
-
-        return $this;
-    }
-
-    /**
      * Set the next chunk to be processed.
      *
      * @param Chunk|null $nextChunk
@@ -177,6 +184,18 @@ abstract class ChunkableJob
     public function setNextChunk(?Chunk $nextChunk): ChunkableJob
     {
         $this->nextChunk = $nextChunk;
+
+        return $this;
+    }
+
+    /**
+     * Stop chunking
+     *
+     * @return $this
+     */
+    public function stopChunking(): static
+    {
+        $this->processNextChunk = false;
 
         return $this;
     }

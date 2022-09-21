@@ -204,10 +204,6 @@ $job->setChunk(new Chunk(totalItems: 100, chunkSize: 10, startingPosition: 5));
 dispatch($job);
 ```
 
-## Setup Callback
-
-If you would like to execute some logic before the chunking starts, you can extend the `setUp` method on your chunkable job which will be run once.
-
 ## Using `ChunkRange` to iterate over all chunks
 
 If you need to iterate over every chunk, you can use the `ChunkRange` class. This will return a generator that you can iterate over to get every chunk.
@@ -278,6 +274,7 @@ The `setUp` and `tearDown` methods are called before and after the chunking proc
 
 use Sammyjo20\ChunkableJobs\Chunk;
 use Sammyjo20\ChunkableJobs\ChunkableJob;
+use Illuminate\Support\Facades\Log;
 
 class GetPageOfPokemon extends ChunkableJob implements ShouldQueue
 {
@@ -303,12 +300,12 @@ class GetPageOfPokemon extends ChunkableJob implements ShouldQueue
     
     protected function setUp(): void
     {
-        \Log::info('Starting the retrieval process...');
+        Log::info('Starting the retrieval process...');
     }
     
     protected function tearDown(): void
     {
-        \Log::info('Finished the retrieval process!');
+        Log::info('Finished the retrieval process!');
     }
 }
 ```

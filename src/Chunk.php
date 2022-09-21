@@ -128,20 +128,11 @@ class Chunk
      */
     public function next(): Chunk
     {
-        if ($this->disableNext === true || $this->isLast()) {
+        if ($this->isLast() || $this->isNextDisabled()) {
             return $this;
         }
 
-        $next = clone $this;
-
-        $next->position++;
-        $next->remainingItems -= $next->size;
-        $next->remainingChunks--;
-        $next->offset += $next->size;
-        $next->limit = min($next->remainingItems, $next->size);
-        $next->size = $next->limit;
-
-        return $next;
+        return $this->move($this->position + 1);
     }
 
     /**
@@ -167,7 +158,7 @@ class Chunk
 
         // Now we'll create a new chunk to process it with.
 
-        $newChunk = new Chunk($this->totalItems, $this->originalSize);
+        $newChunk = clone $this;
 
         $newChunk->position = $position;
         $newChunk->remainingItems = $remaining;
@@ -175,13 +166,8 @@ class Chunk
         $newChunk->offset = ($position - 1) * $this->originalSize;
         $newChunk->limit = min($remaining, $this->originalSize);
         $newChunk->size = $newChunk->limit;
-        $newChunk->metadata = $this->metadata;
 
-        if ($mutable === false) {
-            return $newChunk;
-        }
-
-        return $this->replace($newChunk);
+        return $mutable === true ? $this->replace($newChunk) : $newChunk;
     }
 
     /**
@@ -233,7 +219,7 @@ class Chunk
      */
     public function isLast(): bool
     {
-        return $this->remainingChunks === 0 || $this->disableNext === true;
+        return $this->remainingChunks === 0;
     }
 
     /**
@@ -276,5 +262,27 @@ class Chunk
         $this->disableNext = true;
 
         return $this;
+    }
+
+    /**
+     * Enable the next chunk functionality
+     *
+     * @return $this
+     */
+    public function enableNext(): Chunk
+    {
+        $this->disableNext = false;
+
+        return $this;
+    }
+
+    /**
+     * Check if the next is disabled.
+     *
+     * @return bool
+     */
+    public function isNextDisabled(): bool
+    {
+        return $this->disableNext === true;
     }
 }
