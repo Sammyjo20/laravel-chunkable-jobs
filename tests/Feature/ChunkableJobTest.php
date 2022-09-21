@@ -1,12 +1,13 @@
 <?php declare(strict_types=1);
 
 use Sammyjo20\ChunkableJobs\Chunk;
-use Sammyjo20\ChunkableJobs\Tests\Fixtures\SetUpJob;
+use Sammyjo20\ChunkableJobs\Tests\Fixtures\SetUpAndTearDownJob;
 use Sammyjo20\ChunkableJobs\Tests\Fixtures\FailedJob;
 use Sammyjo20\ChunkableJobs\Tests\Fixtures\ReleasedJob;
 use Sammyjo20\ChunkableJobs\Tests\Fixtures\NextChunkJob;
 use Sammyjo20\ChunkableJobs\Tests\Fixtures\NullChunkJob;
 use Sammyjo20\ChunkableJobs\Tests\Fixtures\PaginatedJob;
+use Sammyjo20\ChunkableJobs\Tests\Fixtures\TearDownJob;
 use Sammyjo20\ChunkableJobs\Tests\Fixtures\ZeroItemsJob;
 use Sammyjo20\ChunkableJobs\Tests\Fixtures\EarlyFinishJob;
 use Sammyjo20\ChunkableJobs\Tests\Fixtures\UnknownSizeJob;
@@ -63,8 +64,8 @@ test('when dispatching a job that returns zero items inside of the chunk it wont
     expect(cache()->get('processed'))->toBeFalse();
 });
 
-test('the setUp callback is executed the first time a chunked job is run', function () {
-    SetUpJob::dispatch();
+test('the setUp and tearDown callbacks are executed the first time a chunked job is run', function () {
+    SetUpAndTearDownJob::dispatch();
 
     $chunkOne = cache()->get('1');
     $chunkTwo = cache()->get('2');
@@ -74,9 +75,43 @@ test('the setUp callback is executed the first time a chunked job is run', funct
     expect($chunkTwo)->toBeInstanceOf(Chunk::class);
     expect($chunkThree)->toBeInstanceOf(Chunk::class);
 
-    $count = cache()->get('setUp');
+    $setUpCount = cache()->get('setUp');
 
-    expect($count)->toEqual(1);
+    expect($setUpCount)->toEqual(1);
+
+    $tearDownCount = cache()->get('tearDown');
+
+    expect($tearDownCount)->toEqual(1);
+});
+
+test('the setUp and tearDown methods are only run once each when dispatching every job', function () {
+    SetUpAndTearDownJob::dispatchAllChunks();
+
+    $chunkOne = cache()->get('1');
+    $chunkTwo = cache()->get('2');
+    $chunkThree = cache()->get('3');
+
+    expect($chunkOne)->toBeInstanceOf(Chunk::class);
+    expect($chunkTwo)->toBeInstanceOf(Chunk::class);
+    expect($chunkThree)->toBeInstanceOf(Chunk::class);
+
+    $setUpCount = cache()->get('setUp');
+
+    expect($setUpCount)->toEqual(1);
+
+    // This is run three times...
+
+    $tearDownCount = cache()->get('tearDown');
+
+    expect($tearDownCount)->toEqual(1);
+});
+
+test('the set up method is run even when you provide a chunk', function () {
+
+});
+
+test('the tear down method is run when a chunkable job is cancelled', function () {
+
 });
 
 test('if the job is released it wont dispatch the next chunk', function () {

@@ -10,7 +10,7 @@ use Sammyjo20\ChunkableJobs\ChunkableJob;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 
-class SetUpJob extends ChunkableJob implements ShouldQueue
+class SetUpAndTearDownJob extends ChunkableJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -22,6 +22,11 @@ class SetUpJob extends ChunkableJob implements ShouldQueue
     protected function setUp(): void
     {
         cache()->increment('setUp');
+    }
+
+    protected function tearDown(): void
+    {
+        cache()->increment('tearDown');
     }
 
     protected function handleChunk(Chunk $chunk): void

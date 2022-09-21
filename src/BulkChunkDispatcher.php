@@ -34,6 +34,8 @@ class BulkChunkDispatcher
         foreach ($chunkRange as $chunk) {
             $chunk->disableNext();
 
+            ray($chunk, $chunk->isFirst(), $chunk->isLast());
+
             $dispatchJob = clone $job;
             $dispatchJob->setChunk($chunk);
 

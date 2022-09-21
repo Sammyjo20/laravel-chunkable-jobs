@@ -47,14 +47,16 @@ abstract class ChunkableJob
     public function handle(): void
     {
         if (is_null($this->chunk)) {
-            $this->setUp();
-
             $this->setChunk($this->defineChunk());
         }
 
         $chunk = $this->chunk;
 
         if ($chunk instanceof Chunk && $chunk->isNotEmpty()) {
+            if ($chunk->isFirst()) {
+                $this->setUp();
+            }
+
             $this->handleChunk($chunk);
 
             $this->prependNextJob();
