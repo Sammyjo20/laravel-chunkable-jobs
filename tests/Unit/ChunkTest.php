@@ -306,7 +306,7 @@ test('metadata can be passed in to the constructor', function () {
     expect($chunk->metadata)->toEqual(['name' => 'Sam']);
 });
 
-test('you can disable the next chunk functionality', function () {
+test('you can disable and enable the next chunk functionality', function () {
     $chunk = new Chunk(30, 10);
 
     $nextChunk = $chunk->next();
@@ -316,6 +316,15 @@ test('you can disable the next chunk functionality', function () {
 
     $nextChunk->disableNext();
 
-    expect($nextChunk->isLast())->toBeTrue();
+    expect($nextChunk->isLast())->toBeFalse();
     expect($nextChunk->next())->toBe($nextChunk);
+    expect($nextChunk->isNextDisabled())->toBeTrue();
+
+    $nextChunk->enableNext();
+
+    $lastChunk = $chunk->move(3);
+
+    expect($nextChunk->isLast())->toBeFalse();
+    expect($nextChunk->next())->toEqual($lastChunk);
+    expect($nextChunk->isNextDisabled())->toBeFalse();
 });

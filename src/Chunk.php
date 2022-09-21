@@ -128,20 +128,11 @@ class Chunk
      */
     public function next(): Chunk
     {
-        if ($this->disableNext === true || $this->isLast()) {
+        if ($this->isLast() || $this->isNextDisabled()) {
             return $this;
         }
 
-        $next = clone $this;
-
-        $next->position++;
-        $next->remainingItems -= $next->size;
-        $next->remainingChunks--;
-        $next->offset += $next->size;
-        $next->limit = min($next->remainingItems, $next->size);
-        $next->size = $next->limit;
-
-        return $next;
+        return $this->move($this->position + 1);
     }
 
     /**
@@ -233,7 +224,7 @@ class Chunk
      */
     public function isLast(): bool
     {
-        return $this->remainingChunks === 0 || $this->disableNext === true;
+        return $this->remainingChunks === 0;
     }
 
     /**
@@ -276,5 +267,27 @@ class Chunk
         $this->disableNext = true;
 
         return $this;
+    }
+
+    /**
+     * Enable the next chunk functionality
+     *
+     * @return $this
+     */
+    public function enableNext(): Chunk
+    {
+        $this->disableNext = false;
+
+        return $this;
+    }
+
+    /**
+     * Check if the next is disabled.
+     *
+     * @return bool
+     */
+    public function isNextDisabled(): bool
+    {
+        return $this->disableNext === true;
     }
 }
