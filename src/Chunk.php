@@ -158,7 +158,7 @@ class Chunk
 
         // Now we'll create a new chunk to process it with.
 
-        $newChunk = new Chunk($this->totalItems, $this->originalSize);
+        $newChunk = clone $this;
 
         $newChunk->position = $position;
         $newChunk->remainingItems = $remaining;
@@ -166,13 +166,8 @@ class Chunk
         $newChunk->offset = ($position - 1) * $this->originalSize;
         $newChunk->limit = min($remaining, $this->originalSize);
         $newChunk->size = $newChunk->limit;
-        $newChunk->metadata = $this->metadata;
 
-        if ($mutable === false) {
-            return $newChunk;
-        }
-
-        return $this->replace($newChunk);
+        return $mutable === true ? $this->replace($newChunk) : $newChunk;
     }
 
     /**
