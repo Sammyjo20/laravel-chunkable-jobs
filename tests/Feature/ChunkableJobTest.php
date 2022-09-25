@@ -14,7 +14,8 @@ use Sammyjo20\ChunkableJobs\Tests\Fixtures\UnknownSizeJob;
 use Sammyjo20\ChunkableJobs\Tests\Fixtures\ChunkIntervalJob;
 use Sammyjo20\ChunkableJobs\Tests\Fixtures\ExtraPropertiesJob;
 use Sammyjo20\ChunkableJobs\Tests\Fixtures\SetUpAndTearDownJob;
-use Sammyjo20\ChunkableJobs\Tests\Fixtures\ExtraUnsetPropertiesJob;
+use Sammyjo20\ChunkableJobs\Tests\Fixtures\IgnoredPropertiesJob;
+use Sammyjo20\ChunkableJobs\Tests\Fixtures\InvisibleIgnoredPropertiesJob;
 
 test('when dispatching a job that has 30 items with a chunk size of 10, three jobs will be dispatched', function () {
     PaginatedJob::dispatch();
@@ -211,8 +212,8 @@ test('extra properties are copied over to every job', function () {
     expect($chunkThree)->toEqual('Sam');
 });
 
-test('you can specify extra properties to be unset', function () {
-    ExtraUnsetPropertiesJob::dispatch();
+test('you can specify extra properties to be ignored on clone', function () {
+    IgnoredPropertiesJob::dispatch();
 
     $chunkOne = cache()->get('1');
     $chunkTwo = cache()->get('2');
@@ -221,4 +222,16 @@ test('you can specify extra properties to be unset', function () {
     expect($chunkOne)->toEqual('Sam');
     expect($chunkTwo)->toBeNull();
     expect($chunkThree)->toBeNull();
+});
+
+test('you can overwrite the modifyClone method to unset your own properties', function () {
+    InvisibleIgnoredPropertiesJob::dispatch();
+
+    $chunkOne = cache()->get('1');
+    $chunkTwo = cache()->get('2');
+    $chunkThree = cache()->get('3');
+
+    expect($chunkOne)->toEqual('SamFlip');
+    expect($chunkTwo)->toEqual('');
+    expect($chunkThree)->toEqual('');
 });

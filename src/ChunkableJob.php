@@ -37,7 +37,7 @@ abstract class ChunkableJob
      *
      * @var array
      */
-    protected array $extraUnsetProperties = [];
+    protected array $ignoredProperties = [];
 
     /**
      * Process the job.
@@ -125,15 +125,19 @@ abstract class ChunkableJob
         // is the "job" instance on the class, but we also want to ignore chunk
         // and nextChunk.
 
-        $unsetProperties = array_merge([
+        $ignoredProperties = array_merge([
             'job', 'middleware', 'chunk', 'nextChunk',
-        ], $this->extraUnsetProperties);
+        ], $this->ignoredProperties);
 
         $clone = clone $this;
 
-        foreach ($unsetProperties as $property) {
+        foreach ($ignoredProperties as $property) {
             unset($clone->$property);
         }
+
+        // We'll also trigger a method that can be implemented to unset
+
+        $clone = $this->modifyClone($clone);
 
         // Next, we'll set the chunk of the clone to the next chunk.
 
@@ -210,6 +214,17 @@ abstract class ChunkableJob
     public static function dispatchAllChunks(...$arguments): void
     {
         BulkChunkDispatcher::dispatch(new static(...$arguments));
+    }
+
+    /**
+     * Modify the clone before it is sent.
+     *
+     * @param ChunkableJob $job
+     * @return $this
+     */
+    protected function modifyClone(ChunkableJob $job): static
+    {
+        return $job;
     }
 
     /**

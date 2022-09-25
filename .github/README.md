@@ -310,6 +310,56 @@ class GetPageOfPokemon extends ChunkableJob implements ShouldQueue
 }
 ```
 
+## Warning around properties
+When you use the ChunkableJob class on your job, you have to be careful about the properties that you set on your jobs during runtime. When the every next chunkable job is created, the current object is 
+cloned including its public, protected and private properties. If there are any properties that are set by the `defineChunk` or `handleChunk` methods, and you do not want them to be shared with the next
+chunk, make sure to add the property to the `$ignoredProperties` array on the job.
+
+```php
+<?php
+
+use Sammyjo20\ChunkableJobs\Chunk;
+use Sammyjo20\ChunkableJobs\ChunkableJob;
+use Illuminate\Support\Facades\Log;
+
+class GetPageOfPokemon extends ChunkableJob implements ShouldQueue
+{
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    
+    protected string $stripeSecret;
+    
+    protected array $ignoredProperties = ['stripeSecret'];
+}
+```
+Since private properties cannot be ignored, you should use the `modifyClone` method which can be used
+to unset private properties or make final adjustments to the cloned object before it is put onto the 
+queue.
+
+```php
+<?php
+
+class GetPageOfPokemon extends ChunkableJob implements ShouldQueue
+{
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    private ?string $privateProperty = null;
+
+    public function __construct()
+    {
+        $this->privateProperty = 'Shh!';
+    }
+
+    // ... Other methods
+
+    protected function modifyClone(ChunkableJob $job): static
+    {
+        unset($job->privateProperty);
+
+        return $job;
+    }
+}
+```
+
 ## Support This Project
 
 <a href='https://ko-fi.com/sammyjo20' target='_blank'><img height='35' style='border:0px;height:46px;' src='https://az743702.vo.msecnd.net/cdn/kofi3.png?v=0' border='0' alt='Buy Me a Coffee at ko-fi.com' />
