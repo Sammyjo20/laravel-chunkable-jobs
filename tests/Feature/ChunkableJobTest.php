@@ -1,7 +1,6 @@
 <?php declare(strict_types=1);
 
 use Sammyjo20\ChunkableJobs\Chunk;
-use Sammyjo20\ChunkableJobs\Tests\Fixtures\InvisibleIgnoredPropertiesJob;
 use Sammyjo20\ChunkableJobs\Tests\Fixtures\SetUpJob;
 use Sammyjo20\ChunkableJobs\Tests\Fixtures\FailedJob;
 use Sammyjo20\ChunkableJobs\Tests\Fixtures\ReleasedJob;
@@ -16,6 +15,7 @@ use Sammyjo20\ChunkableJobs\Tests\Fixtures\ChunkIntervalJob;
 use Sammyjo20\ChunkableJobs\Tests\Fixtures\ExtraPropertiesJob;
 use Sammyjo20\ChunkableJobs\Tests\Fixtures\SetUpAndTearDownJob;
 use Sammyjo20\ChunkableJobs\Tests\Fixtures\IgnoredPropertiesJob;
+use Sammyjo20\ChunkableJobs\Tests\Fixtures\InvisibleIgnoredPropertiesJob;
 
 test('when dispatching a job that has 30 items with a chunk size of 10, three jobs will be dispatched', function () {
     PaginatedJob::dispatch();
