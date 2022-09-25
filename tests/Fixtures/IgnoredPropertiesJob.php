@@ -10,11 +10,11 @@ use Sammyjo20\ChunkableJobs\ChunkableJob;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 
-class ExtraUnsetPropertiesJob extends ChunkableJob implements ShouldQueue
+class IgnoredPropertiesJob extends ChunkableJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected array $extraUnsetProperties = ['name'];
+    protected array $ignoredProperties = ['name'];
 
     /**
      * @var string
